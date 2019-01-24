@@ -1,5 +1,5 @@
 {
-  "name": "react-lib",
+  "name": "dbdbdb-provider",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "dev-demo": "parcel index.html",
     "dev-lib": "rollup -c -w",
     "build": "rollup -c",
-    "predeploy": "npm run build && parcel build index.html --public-url ./",
+    "predeploy": "npm run build && parcel build index.html --public-url ./dbdbdb-provider",
     "deploy": "gh-pages -d dist"
   },
   "keywords": [],
