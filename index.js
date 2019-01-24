@@ -1,7 +1,22 @@
-import React from 'react';
+import React, { createContext } from 'react';
+import dbdb from 'dbdbdb';
 
-function MyComponent() {
-  return React.createElement("div", null, "My Component");
+function createDropboxProvider(options) {
+  const db = dbdb(options);
+  const DropboxContext = createContext();
+
+  function DropboxProvider({
+    children
+  }) {
+    return React.createElement(DropboxContext.Provider, {
+      value: db
+    }, children);
+  }
+
+  return {
+    DropboxContext,
+    DropboxProvider
+  };
 }
 
-export default MyComponent;
+export default createDropboxProvider;
