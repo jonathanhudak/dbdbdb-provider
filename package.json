@@ -1,5 +1,5 @@
 {
-  "name": "dbdbdb-provider",
+  "name": "react-lib",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,8 @@
     "start": "concurrently \"npm:dev-*\"",
     "dev-demo": "parcel index.html",
     "dev-lib": "rollup -c -w",
-    "build": "rollup src/index.js --file index.js --format esm",
+    "build": "rollup -c",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "keywords": [],
