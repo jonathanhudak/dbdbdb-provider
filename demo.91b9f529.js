@@ -27,4 +27,4 @@ var e;!function(t,r){"object"==typeof exports&&"undefined"!=typeof module?module
 },{"react":"HdMw","dbdbdb":"SuD7"}],"lgAh":[function(require,module,exports) {
 "use strict";var e=l(require("react-dom")),t=n(require("react")),r=l(require("."));function n(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var r in e)if(Object.prototype.hasOwnProperty.call(e,r)){var n=Object.defineProperty&&Object.getOwnPropertyDescriptor?Object.getOwnPropertyDescriptor(e,r):{};n.get||n.set?Object.defineProperty(t,r,n):t[r]=e[r]}return t.default=e,t}function l(e){return e&&e.__esModule?e:{default:e}}var u=(0,r.default)({clientId:"xhb23gwddzfsp8k"}),o=u.DropboxContext,a=u.DropboxProvider,d=document.getElementById("root");function c(){var e=(0,t.useContext)(o);return t.default.createElement("header",null,"header ",t.default.createElement("pre",null,JSON.stringify(e,null,2)))}function f(){return t.default.createElement(a,null,t.default.createElement(c,null))}e.default.render(t.default.createElement(f,null),d);
 },{"react-dom":"X9zx","react":"HdMw",".":"Focm"}]},{},["lgAh"], null)
-//# sourceMappingURL=demo.91b9f529.map
+//# sourceMappingURL=dbdbdb-provider/demo.91b9f529.map
