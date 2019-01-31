@@ -5,7 +5,7 @@ import createDropboxProvider from ".";
 const {
   DropboxContext,
   DropboxProvider,
-  withDropboxClient
+  useDropboxClient
 } = createDropboxProvider({
   clientId: "xhb23gwddzfsp8k",
   authRedirect: process.env.LOGIN_REDIRECT
@@ -15,7 +15,7 @@ const root = document.getElementById("root");
 
 const UserInfo = () => {
   const [userInfo, setUserInfo] = useState(null);
-  const { client, logout } = withDropboxClient();
+  const { client, logout } = useDropboxClient();
   useEffect(() => {
     client.usersGetCurrentAccount().then(setUserInfo);
   }, []);

@@ -10,7 +10,7 @@ export default function createDropboxProvider(options) {
     );
   }
 
-  function withDropboxClient() {
+  function useDropboxClient() {
     const dropboxClient = useContext(DropboxContext);
     const { getClient, logOutDropbox } = dropboxClient;
     const [client, setClient] = useState(getClient());
@@ -28,6 +28,6 @@ export default function createDropboxProvider(options) {
   return {
     DropboxContext,
     DropboxProvider,
-    withDropboxClient
+    useDropboxClient
   };
 }
