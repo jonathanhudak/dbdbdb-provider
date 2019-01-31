@@ -8,7 +8,7 @@
     "dev-demo": "parcel index.html",
     "dev-lib": "rollup -c -w",
     "build": "rollup -c",
-    "predeploy": "npm run build && parcel build index.html --public-url ./",
+    "predeploy": "npm run build && LOGIN_REDIRECT='https://jonathanhudak.com/dbdbdb-provider/' parcel build index.html --public-url ./",
     "deploy": "gh-pages -d dist"
   },
   "keywords": [],

@@ -7,7 +7,8 @@ const {
   DropboxProvider,
   withDropboxClient
 } = createDropboxProvider({
-  clientId: "xhb23gwddzfsp8k"
+  clientId: "xhb23gwddzfsp8k",
+  authRedirect: process.env.LOGIN_REDIRECT
 });
 
 const root = document.getElementById("root");
