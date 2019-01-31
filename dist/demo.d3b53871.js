@@ -25113,10 +25113,6 @@ function index({
   const databaseFileNameWithExtension = `${databaseFileName}.json`;
   const databaseFilePath = `${databaseDirectoryPath}${databaseFileNameWithExtension}`;
 
-  function getClient() {
-    return client;
-  }
-
   function getAccessTokenFromUrl() {
     return parseQueryString(window.location.hash).access_token;
   }
@@ -25136,6 +25132,10 @@ function index({
       });
       return getClient();
     }
+  }
+
+  function getClient() {
+    return client || createClient();
   }
 
   function getAuthUrl() {
@@ -25219,6 +25219,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 function createDropboxProvider(options) {
   var db = (0, _dbdbdb.default)(options);
   var DropboxContext = (0, _react.createContext)();
@@ -25230,9 +25242,30 @@ function createDropboxProvider(options) {
     }, children);
   }
 
+  function withDropboxClient() {
+    var dropboxClient = (0, _react.useContext)(DropboxContext);
+    var getClient = dropboxClient.getClient,
+        logOutDropbox = dropboxClient.logOutDropbox;
+
+    var _useState = (0, _react.useState)(getClient()),
+        _useState2 = _slicedToArray(_useState, 2),
+        client = _useState2[0],
+        setClient = _useState2[1];
+
+    return _objectSpread({
+      client: client
+    }, dropboxClient, {
+      logout: function logout() {
+        logOutDropbox();
+        setClient(null);
+      }
+    });
+  }
+
   return {
     DropboxContext: DropboxContext,
-    DropboxProvider: DropboxProvider
+    DropboxProvider: DropboxProvider,
+    withDropboxClient: withDropboxClient
   };
 }
 
@@ -25251,21 +25284,116 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var _createDropboxProvide = (0, _.default)({
   clientId: "xhb23gwddzfsp8k"
 }),
     DropboxContext = _createDropboxProvide.DropboxContext,
-    DropboxProvider = _createDropboxProvide.DropboxProvider;
+    DropboxProvider = _createDropboxProvide.DropboxProvider,
+    withDropboxClient = _createDropboxProvide.withDropboxClient;
 
 var root = document.getElementById("root");
 
+var UserInfo = function UserInfo() {
+  var _useState = (0, _react.useState)(null),
+      _useState2 = _slicedToArray(_useState, 2),
+      userInfo = _useState2[0],
+      setUserInfo = _useState2[1];
+
+  var _withDropboxClient = withDropboxClient(),
+      client = _withDropboxClient.client,
+      logout = _withDropboxClient.logout;
+
+  (0, _react.useEffect)(function () {
+    client.usersGetCurrentAccount().then(setUserInfo);
+  }, []);
+  return userInfo ? _react.default.createElement("div", null, _react.default.createElement("div", null, _react.default.createElement("h2", null, userInfo.name.familiar_name), _react.default.createElement("img", {
+    style: {
+      borderRadius: "50%"
+    },
+    with: 50,
+    height: 50,
+    src: userInfo.profile_photo_url,
+    alt: userInfo.name.display_name
+  }), _react.default.createElement("button", {
+    onClick: logout
+  }, "Logout"))) : "loading...";
+};
+
+function DatabaseEditor() {
+  var editorRef = (0, _react.useRef)(null);
+
+  var _useState3 = (0, _react.useState)(null),
+      _useState4 = _slicedToArray(_useState3, 2),
+      error = _useState4[0],
+      setError = _useState4[1];
+
+  var _withDropboxClient2 = withDropboxClient(),
+      client = _withDropboxClient2.client,
+      readDatabase = _withDropboxClient2.readDatabase,
+      saveDatabase = _withDropboxClient2.saveDatabase;
+
+  var _useState5 = (0, _react.useState)(null),
+      _useState6 = _slicedToArray(_useState5, 2),
+      database = _useState6[0],
+      setDatabase = _useState6[1];
+
+  if (!client) return null;
+  (0, _react.useEffect)(function () {
+    readDatabase().then(function (database) {
+      setDatabase(database || {});
+    });
+  }, []);
+  if (!database) return _react.default.createElement("div", null, "Loading database...");
+
+  function save(_ref) {
+    var target = _ref.target;
+
+    try {
+      var _database = JSON.parse(editorRef.current.value);
+
+      saveDatabase({
+        data: _database
+      });
+      setError(null);
+    } catch (e) {
+      setError(e.toString());
+    }
+  }
+
+  return _react.default.createElement("div", null, _react.default.createElement("h2", null, "JSON Database Editor"), _react.default.createElement("textarea", {
+    ref: editorRef,
+    cols: 100,
+    rows: 15,
+    defaultValue: JSON.stringify(database, null, 2)
+  }), _react.default.createElement("button", {
+    onClick: save
+  }, "Save"), error && _react.default.createElement("p", {
+    style: {
+      color: "tomato"
+    }
+  }, error));
+}
+
 function Header() {
-  var db = (0, _react.useContext)(DropboxContext);
-  return _react.default.createElement("header", null, "header ", _react.default.createElement("pre", null, JSON.stringify(db, null, 2)));
+  var _withDropboxClient3 = withDropboxClient(),
+      client = _withDropboxClient3.client,
+      authUrl = _withDropboxClient3.authUrl;
+
+  return _react.default.createElement("header", null, client ? _react.default.createElement(UserInfo, null) : _react.default.createElement("a", {
+    href: authUrl
+  }, "Login"));
 }
 
 function App() {
-  return _react.default.createElement(DropboxProvider, null, _react.default.createElement(Header, null));
+  return _react.default.createElement(DropboxProvider, null, _react.default.createElement(Header, null), _react.default.createElement(DatabaseEditor, null));
 }
 
 _reactDom.default.render(_react.default.createElement(App, null), root);
@@ -25296,7 +25424,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63844" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61148" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

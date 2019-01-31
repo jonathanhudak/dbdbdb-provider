@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React, { createContext, useContext, useState } from "react";
 import dbdb from "dbdbdb";
 
 export default function createDropboxProvider(options) {
@@ -10,8 +10,24 @@ export default function createDropboxProvider(options) {
     );
   }
 
+  function withDropboxClient() {
+    const dropboxClient = useContext(DropboxContext);
+    const { getClient, logOutDropbox } = dropboxClient;
+    const [client, setClient] = useState(getClient());
+
+    return {
+      client,
+      ...dropboxClient,
+      logout: () => {
+        logOutDropbox();
+        setClient(null);
+      }
+    };
+  }
+
   return {
     DropboxContext,
-    DropboxProvider
+    DropboxProvider,
+    withDropboxClient
   };
 }
