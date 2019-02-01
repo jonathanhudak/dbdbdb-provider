@@ -86,54 +86,11 @@ function Header() {
   return <header>{client ? <UserInfo /> : <a href={authUrl}>Login</a>}</header>;
 }
 
-class MyApp extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { client: null };
-  }
-  componentDidMount() {
-    const client = this.context.getClient();
-    this.setState({ client });
-    if (client) {
-      client.usersGetCurrentAccount().then(userInfo => {
-        this.setState({ userInfo });
-      });
-    }
-  }
-  render() {
-    if (!this.state.client) {
-      return <a href={this.context.authUrl}>Login</a>;
-    }
-    if (this.state.client && !this.state.userInfo) {
-      return <p>Loading...</p>;
-    }
-    console.log(this.state.userInfo);
-    // return <pre>{JSON.stringify(this.state, null, 2)}</pre>;
-    return (
-      <div style={{ background: "gold" }}>
-        <h2>{this.state.userInfo.name.familiar_name}</h2>
-        <img
-          style={{ borderRadius: "50%" }}
-          with={50}
-          height={50}
-          src={this.state.userInfo.profile_photo_url}
-          alt={this.state.userInfo.name.display_name}
-        />
-      </div>
-    );
-  }
-}
-
-MyApp.contextType = DropboxContext;
-
 function App() {
   return (
     <DropboxProvider>
       <Header />
       <DatabaseEditor />
-      <hr />
-
-      <MyApp />
     </DropboxProvider>
   );
 }

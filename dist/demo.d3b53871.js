@@ -25284,24 +25284,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -25411,79 +25393,8 @@ function Header() {
   }, "Login"));
 }
 
-var MyApp =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(MyApp, _React$Component);
-
-  function MyApp(props) {
-    var _this;
-
-    _classCallCheck(this, MyApp);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(MyApp).call(this, props));
-    _this.state = {
-      client: null
-    };
-    return _this;
-  }
-
-  _createClass(MyApp, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      var client = this.context.getClient();
-      this.setState({
-        client: client
-      });
-
-      if (client) {
-        client.usersGetCurrentAccount().then(function (userInfo) {
-          _this2.setState({
-            userInfo: userInfo
-          });
-        });
-      }
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      if (!this.state.client) {
-        return _react.default.createElement("a", {
-          href: this.context.authUrl
-        }, "Login");
-      }
-
-      if (this.state.client && !this.state.userInfo) {
-        return _react.default.createElement("p", null, "Loading...");
-      }
-
-      console.log(this.state.userInfo); // return <pre>{JSON.stringify(this.state, null, 2)}</pre>;
-
-      return _react.default.createElement("div", {
-        style: {
-          background: "gold"
-        }
-      }, _react.default.createElement("h2", null, this.state.userInfo.name.familiar_name), _react.default.createElement("img", {
-        style: {
-          borderRadius: "50%"
-        },
-        with: 50,
-        height: 50,
-        src: this.state.userInfo.profile_photo_url,
-        alt: this.state.userInfo.name.display_name
-      }));
-    }
-  }]);
-
-  return MyApp;
-}(_react.default.Component);
-
-MyApp.contextType = DropboxContext;
-
 function App() {
-  return _react.default.createElement(DropboxProvider, null, _react.default.createElement(Header, null), _react.default.createElement(DatabaseEditor, null), _react.default.createElement("hr", null), _react.default.createElement(MyApp, null));
+  return _react.default.createElement(DropboxProvider, null, _react.default.createElement(Header, null), _react.default.createElement(DatabaseEditor, null));
 }
 
 _reactDom.default.render(_react.default.createElement(App, null), root);
@@ -25514,7 +25425,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50872" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64067" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
