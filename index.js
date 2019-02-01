@@ -13,7 +13,7 @@ function createDropboxProvider(options) {
     }, children);
   }
 
-  function withDropboxClient() {
+  function useDropboxClient() {
     const dropboxClient = useContext(DropboxContext);
     const {
       getClient,
@@ -33,7 +33,7 @@ function createDropboxProvider(options) {
   return {
     DropboxContext,
     DropboxProvider,
-    withDropboxClient
+    useDropboxClient
   };
 }
 

@@ -25242,7 +25242,7 @@ function createDropboxProvider(options) {
     }, children);
   }
 
-  function withDropboxClient() {
+  function useDropboxClient() {
     var dropboxClient = (0, _react.useContext)(DropboxContext);
     var getClient = dropboxClient.getClient,
         logOutDropbox = dropboxClient.logOutDropbox;
@@ -25265,7 +25265,7 @@ function createDropboxProvider(options) {
   return {
     DropboxContext: DropboxContext,
     DropboxProvider: DropboxProvider,
-    withDropboxClient: withDropboxClient
+    useDropboxClient: useDropboxClient
   };
 }
 
@@ -25284,6 +25284,24 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -25293,11 +25311,12 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var _createDropboxProvide = (0, _.default)({
-  clientId: "xhb23gwddzfsp8k"
+  clientId: "xhb23gwddzfsp8k",
+  authRedirect: undefined
 }),
     DropboxContext = _createDropboxProvide.DropboxContext,
     DropboxProvider = _createDropboxProvide.DropboxProvider,
-    withDropboxClient = _createDropboxProvide.withDropboxClient;
+    useDropboxClient = _createDropboxProvide.useDropboxClient;
 
 var root = document.getElementById("root");
 
@@ -25307,9 +25326,9 @@ var UserInfo = function UserInfo() {
       userInfo = _useState2[0],
       setUserInfo = _useState2[1];
 
-  var _withDropboxClient = withDropboxClient(),
-      client = _withDropboxClient.client,
-      logout = _withDropboxClient.logout;
+  var _useDropboxClient = useDropboxClient(),
+      client = _useDropboxClient.client,
+      logout = _useDropboxClient.logout;
 
   (0, _react.useEffect)(function () {
     client.usersGetCurrentAccount().then(setUserInfo);
@@ -25335,10 +25354,10 @@ function DatabaseEditor() {
       error = _useState4[0],
       setError = _useState4[1];
 
-  var _withDropboxClient2 = withDropboxClient(),
-      client = _withDropboxClient2.client,
-      readDatabase = _withDropboxClient2.readDatabase,
-      saveDatabase = _withDropboxClient2.saveDatabase;
+  var _useDropboxClient2 = useDropboxClient(),
+      client = _useDropboxClient2.client,
+      readDatabase = _useDropboxClient2.readDatabase,
+      saveDatabase = _useDropboxClient2.saveDatabase;
 
   var _useState5 = (0, _react.useState)(null),
       _useState6 = _slicedToArray(_useState5, 2),
@@ -25383,17 +25402,88 @@ function DatabaseEditor() {
 }
 
 function Header() {
-  var _withDropboxClient3 = withDropboxClient(),
-      client = _withDropboxClient3.client,
-      authUrl = _withDropboxClient3.authUrl;
+  var _useDropboxClient3 = useDropboxClient(),
+      client = _useDropboxClient3.client,
+      authUrl = _useDropboxClient3.authUrl;
 
   return _react.default.createElement("header", null, client ? _react.default.createElement(UserInfo, null) : _react.default.createElement("a", {
     href: authUrl
   }, "Login"));
 }
 
+var MyApp =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(MyApp, _React$Component);
+
+  function MyApp(props) {
+    var _this;
+
+    _classCallCheck(this, MyApp);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(MyApp).call(this, props));
+    _this.state = {
+      client: null
+    };
+    return _this;
+  }
+
+  _createClass(MyApp, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      var client = this.context.getClient();
+      this.setState({
+        client: client
+      });
+
+      if (client) {
+        client.usersGetCurrentAccount().then(function (userInfo) {
+          _this2.setState({
+            userInfo: userInfo
+          });
+        });
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      if (!this.state.client) {
+        return _react.default.createElement("a", {
+          href: this.context.authUrl
+        }, "Login");
+      }
+
+      if (this.state.client && !this.state.userInfo) {
+        return _react.default.createElement("p", null, "Loading...");
+      }
+
+      console.log(this.state.userInfo); // return <pre>{JSON.stringify(this.state, null, 2)}</pre>;
+
+      return _react.default.createElement("div", {
+        style: {
+          background: "gold"
+        }
+      }, _react.default.createElement("h2", null, this.state.userInfo.name.familiar_name), _react.default.createElement("img", {
+        style: {
+          borderRadius: "50%"
+        },
+        with: 50,
+        height: 50,
+        src: this.state.userInfo.profile_photo_url,
+        alt: this.state.userInfo.name.display_name
+      }));
+    }
+  }]);
+
+  return MyApp;
+}(_react.default.Component);
+
+MyApp.contextType = DropboxContext;
+
 function App() {
-  return _react.default.createElement(DropboxProvider, null, _react.default.createElement(Header, null), _react.default.createElement(DatabaseEditor, null));
+  return _react.default.createElement(DropboxProvider, null, _react.default.createElement(Header, null), _react.default.createElement(DatabaseEditor, null), _react.default.createElement("hr", null), _react.default.createElement(MyApp, null));
 }
 
 _reactDom.default.render(_react.default.createElement(App, null), root);
@@ -25424,7 +25514,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61148" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50872" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
