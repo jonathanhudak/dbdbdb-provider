@@ -15,7 +15,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "dbdbdb": "0.0.45",
+    "dbdbdb": "0.0.55",
     "react": "^16.8.0-alpha.1"
   },
   "devDependencies": {

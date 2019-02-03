@@ -42,7 +42,7 @@ const UserInfo = () => {
 function DatabaseEditor() {
   const editorRef = useRef(null);
   const [error, setError] = useState(null);
-  const { client, readDatabase, saveDatabase } = useDropboxClient();
+  const { client, readDatabase, updateDatabase } = useDropboxClient();
   const [database, setDatabase] = useState(null);
 
   if (!client) return null;
@@ -58,7 +58,7 @@ function DatabaseEditor() {
   function save({ target }) {
     try {
       const database = JSON.parse(editorRef.current.value);
-      saveDatabase({ data: database });
+      updateDatabase({ data: database });
       setError(null);
     } catch (e) {
       setError(e.toString());

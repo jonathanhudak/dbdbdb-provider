@@ -25191,13 +25191,48 @@ function index({
     });
   }
 
+  async function updateDatabase({
+    data,
+    databaseName
+  }) {
+    const currentDatabase = await readDatabase();
+    return uploadFile({
+      client,
+      file: createJsonFile({ ...currentDatabase,
+        ...data
+      }, databaseName),
+      path: databaseFilePath
+    });
+  }
+
+  async function uploadImage({
+    path = "/images/",
+    file
+  }) {
+    const filePath = `${path}${file.name}`;
+    await client.filesUpload({
+      path: filePath,
+      contents: file,
+      mode: "overwrite"
+    });
+    const image = await client.sharingCreateSharedLink({
+      path: filePath
+    });
+    return { ...image,
+      name: file.name,
+      url: image.url.replace(/.$/, "1")
+    };
+  }
+
   return {
     authUrl: getAuthUrl(),
     createClient,
     getClient,
     logOutDropbox,
     readDatabase,
-    saveDatabase
+    saveDatabase,
+    updateDatabase,
+    uploadImage
   };
 }
 
@@ -25339,7 +25374,7 @@ function DatabaseEditor() {
   var _useDropboxClient2 = useDropboxClient(),
       client = _useDropboxClient2.client,
       readDatabase = _useDropboxClient2.readDatabase,
-      saveDatabase = _useDropboxClient2.saveDatabase;
+      updateDatabase = _useDropboxClient2.updateDatabase;
 
   var _useState5 = (0, _react.useState)(null),
       _useState6 = _slicedToArray(_useState5, 2),
@@ -25360,7 +25395,7 @@ function DatabaseEditor() {
     try {
       var _database = JSON.parse(editorRef.current.value);
 
-      saveDatabase({
+      updateDatabase({
         data: _database
       });
       setError(null);
@@ -25425,7 +25460,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64067" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60787" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
