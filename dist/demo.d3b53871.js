@@ -25034,14 +25034,11 @@ var define;
 },{}],"node_modules/dbdbdb/index.js":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
+function _interopDefault(ex) {
+  return ex && typeof ex === "object" && "default" in ex ? ex["default"] : ex;
+}
 
-var _isomorphicFetch = _interopRequireDefault(require("isomorphic-fetch"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var fetch = _interopDefault(require("isomorphic-fetch"));
 
 function parseQueryString(str) {
   var ret = Object.create(null);
@@ -25056,15 +25053,17 @@ function parseQueryString(str) {
     return ret;
   }
 
-  str.split("&").forEach(function (param) {
-    var parts = param.replace(/\+/g, " ").split("="); // Firefox (pre 40) decodes `%3D` to `=`
+  str.split("&").forEach(function(param) {
+    var parts = param.replace(/\+/g, " ").split("=");
+    // Firefox (pre 40) decodes `%3D` to `=`
     // https://github.com/sindresorhus/query-string/pull/37
-
     var key = parts.shift();
     var val = parts.length > 0 ? parts.join("=") : undefined;
-    key = decodeURIComponent(key); // missing `=` should be `null`:
-    // http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
 
+    key = decodeURIComponent(key);
+
+    // missing `=` should be `null`:
+    // http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
     val = val === undefined ? null : decodeURIComponent(val);
 
     if (ret[key] === undefined) {
@@ -25075,6 +25074,7 @@ function parseQueryString(str) {
       ret[key] = [ret[key], val];
     }
   });
+
   return ret;
 }
 
@@ -25089,11 +25089,7 @@ function createJsonFile(content, fileName = "dbdb.json") {
   });
 }
 
-function uploadFile({
-  client,
-  path,
-  file
-}) {
+function uploadFile({ client, path, file }) {
   return client.filesUpload({
     path,
     contents: file,
@@ -25106,7 +25102,7 @@ function index({
   databaseDirectoryPath = "/",
   authRedirect = window.location.origin,
   clientId,
-  fetchMethod = _isomorphicFetch.default,
+  fetchMethod = fetch,
   tokenKey = TOKEN_KEY
 }) {
   let client;
@@ -25126,10 +25122,7 @@ function index({
     }
 
     if (accessToken) {
-      client = new Dropbox({
-        accessToken,
-        fetch: fetchMethod
-      });
+      client = new Dropbox({ accessToken, fetch: fetchMethod });
       return getClient();
     }
   }
@@ -25139,10 +25132,7 @@ function index({
   }
 
   function getAuthUrl() {
-    const dbx = new Dropbox({
-      clientId,
-      fetch: _isomorphicFetch.default
-    });
+    const dbx = new Dropbox({ clientId, fetch });
     return dbx.getAuthenticationUrl(authRedirect);
   }
 
@@ -25151,10 +25141,7 @@ function index({
     window.sessionStorage.removeItem(tokenKey);
   }
 
-  function saveDatabase({
-    data,
-    databaseName
-  }) {
+  function saveDatabase({ data, databaseName }) {
     uploadFile({
       client,
       file: createJsonFile(data, databaseName),
@@ -25164,61 +25151,50 @@ function index({
 
   function readDatabase() {
     return new Promise((resolve, error) => {
-      client.filesSearch({
-        path: "",
-        query: databaseFileNameWithExtension
-      }).then(({
-        matches
-      }) => {
-        if (matches && matches.length) {
-          const [databaseFile] = matches;
-          client.filesDownload({
-            path: databaseFile.metadata.path_display
-          }).then(r => {
-            var fileReader = new FileReader();
-
-            fileReader.onload = function () {
-              resolve(JSON.parse(this.result));
-            };
-
-            fileReader.readAsText(r.fileBlob);
-          });
-        } else {
-          console.warn("no db found");
-          resolve();
-        }
-      });
+      client
+        .filesSearch({
+          path: "",
+          query: databaseFileNameWithExtension
+        })
+        .then(({ matches }) => {
+          if (matches && matches.length) {
+            const [databaseFile] = matches;
+            client
+              .filesDownload({ path: databaseFile.metadata.path_display })
+              .then(r => {
+                var fileReader = new FileReader();
+                fileReader.onload = function() {
+                  resolve(JSON.parse(this.result));
+                };
+                fileReader.readAsText(r.fileBlob);
+              });
+          } else {
+            console.warn("no db found");
+            resolve();
+          }
+        });
     });
   }
 
-  async function updateDatabase({
-    data,
-    databaseName
-  }) {
+  async function updateDatabase({ data, databaseName }) {
     const currentDatabase = await readDatabase();
     return uploadFile({
       client,
-      file: createJsonFile({ ...currentDatabase,
-        ...data
-      }, databaseName),
+      file: createJsonFile({ ...currentDatabase, ...data }, databaseName),
       path: databaseFilePath
     });
   }
 
-  async function uploadImage({
-    path = "/images/",
-    file
-  }) {
+  async function uploadImage({ path = "/images/", file }) {
     const filePath = `${path}${file.name}`;
     await client.filesUpload({
       path: filePath,
       contents: file,
       mode: "overwrite"
     });
-    const image = await client.sharingCreateSharedLink({
-      path: filePath
-    });
-    return { ...image,
+    const image = await client.sharingCreateSharedLink({ path: filePath });
+    return {
+      ...image,
       name: file.name,
       url: image.url.replace(/.$/, "1")
     };
@@ -25236,23 +25212,10 @@ function index({
   };
 }
 
-var _default = index;
-exports.default = _default;
+module.exports = index;
+
 },{"isomorphic-fetch":"node_modules/isomorphic-fetch/fetch-npm-browserify.js","dropbox":"node_modules/dropbox/dist/Dropbox-sdk.min.js"}],"index.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireWildcard(require("react"));
-
-var _dbdbdb = _interopRequireDefault(require("dbdbdb"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+'use strict';
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
@@ -25266,26 +25229,38 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _interopDefault(ex) {
+  return ex && _typeof(ex) === 'object' && 'default' in ex ? ex['default'] : ex;
+}
+
+var React = require('react');
+
+var React__default = _interopDefault(React);
+
+var dbdb = _interopDefault(require('dbdbdb'));
+
 function createDropboxProvider(options) {
-  var db = (0, _dbdbdb.default)(options);
-  var DropboxContext = (0, _react.createContext)();
+  var db = dbdb(options);
+  var DropboxContext = React.createContext();
 
   function DropboxProvider(_ref) {
     var children = _ref.children;
-    return _react.default.createElement(DropboxContext.Provider, {
+    return React__default.createElement(DropboxContext.Provider, {
       value: db
     }, children);
   }
 
   function useDropboxClient() {
-    var dropboxClient = (0, _react.useContext)(DropboxContext);
+    var dropboxClient = React.useContext(DropboxContext);
     var getClient = dropboxClient.getClient,
         logOutDropbox = dropboxClient.logOutDropbox;
 
-    var _useState = (0, _react.useState)(getClient()),
-        _useState2 = _slicedToArray(_useState, 2),
-        client = _useState2[0],
-        setClient = _useState2[1];
+    var _React$useState = React.useState(getClient()),
+        _React$useState2 = _slicedToArray(_React$useState, 2),
+        client = _React$useState2[0],
+        setClient = _React$useState2[1];
 
     return _objectSpread({
       client: client
@@ -25304,8 +25279,7 @@ function createDropboxProvider(options) {
   };
 }
 
-var _default = createDropboxProvider;
-exports.default = _default;
+module.exports = createDropboxProvider;
 },{"react":"node_modules/react/index.js","dbdbdb":"node_modules/dbdbdb/index.js"}],"demo.js":[function(require,module,exports) {
 "use strict";
 
@@ -25460,7 +25434,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60787" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54220" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

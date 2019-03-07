@@ -1,25 +1,30 @@
-import React, { createContext, useContext, useState } from 'react';
-import dbdb from 'dbdbdb';
+'use strict';
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var React = require('react');
+var React__default = _interopDefault(React);
+var dbdb = _interopDefault(require('dbdbdb'));
 
 function createDropboxProvider(options) {
   const db = dbdb(options);
-  const DropboxContext = createContext();
+  const DropboxContext = React.createContext();
 
   function DropboxProvider({
     children
   }) {
-    return React.createElement(DropboxContext.Provider, {
+    return React__default.createElement(DropboxContext.Provider, {
       value: db
     }, children);
   }
 
   function useDropboxClient() {
-    const dropboxClient = useContext(DropboxContext);
+    const dropboxClient = React.useContext(DropboxContext);
     const {
       getClient,
       logOutDropbox
     } = dropboxClient;
-    const [client, setClient] = useState(getClient());
+    const [client, setClient] = React.useState(getClient());
     return {
       client,
       ...dropboxClient,
@@ -37,4 +42,4 @@ function createDropboxProvider(options) {
   };
 }
 
-export default createDropboxProvider;
+module.exports = createDropboxProvider;
