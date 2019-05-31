@@ -8,7 +8,8 @@ const {
   useDropboxClient
 } = createDropboxProvider({
   clientId: "xhb23gwddzfsp8k",
-  authRedirect: process.env.LOGIN_REDIRECT
+  authRedirect: process.env.LOGIN_REDIRECT,
+  defaultAccessToken: process.env.DROPBOX_ACCESS_TOKEN
 });
 
 const root = document.getElementById("root");
